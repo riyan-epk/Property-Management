@@ -1,0 +1,124 @@
+<UserControl x:Class="PropertyManager.Views.ExpenseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ════════ LEFT: Add Expense Form ════════ -->
+        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+            <Border Style="{StaticResource CardBorder}">
+                <StackPanel>
+                    <TextBlock Text="💡 Monthly Expenses" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,14"/>
+
+                    <Label Content="Select Agreement"/>
+                    <ComboBox ItemsSource="{Binding Agreements}" SelectedItem="{Binding SelectedAgreement}" Margin="0,0,0,10">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding Tenant.Name, Mode=OneWay}"/>
+                                    <Run Text=" — "/>
+                                    <Run Text="{Binding Unit.UnitNumber, Mode=OneWay}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <Label Content="Month (YYYY-MM)"/>
+                    <TextBox Text="{Binding Month, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" KeyDown="FormField_KeyDown"/>
+
+                    <Label Content="Electricity (Rs.)"/>
+                    <TextBox Text="{Binding Electricity, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" KeyDown="FormField_KeyDown"/>
+
+                    <Label Content="Maintenance (Rs.)"/>
+                    <TextBox Text="{Binding Maintenance, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" KeyDown="FormField_KeyDown"/>
+
+                    <Label Content="Other Expenses (Rs.)"/>
+                    <TextBox Text="{Binding Other, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,14" KeyDown="FormField_KeyDown"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource PrimaryButton}"
+                                Command="{Binding SaveExpenseCommand}" Margin="0,0,8,0">
+                            <TextBlock Text="💾 Save Expense"/>
+                        </Button>
+                        <Button Content="Cancel" Style="{StaticResource SecondaryButton}"
+                                Command="{Binding CancelEditCommand}"
+                                Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Rent Breakdown Card -->
+            <Border Style="{StaticResource CardBorder}">
+                <StackPanel>
+                    <TextBlock Text="📊 Rent Breakdown" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition Height="8"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Effective Base Rent:" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding EffectiveRent, StringFormat=Rs. {0:N0}}" 
+                                   FontWeight="SemiBold" HorizontalAlignment="Right"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Total Expenses:" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TotalExpenses, StringFormat=Rs. {0:N0}}" 
+                                   FontWeight="SemiBold" HorizontalAlignment="Right" Margin="0,4,0,0"/>
+
+                        <Border Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrush}" 
+                                BorderThickness="0,1,0,0" Margin="0,4"/>
+
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Total Rent:" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding TotalRent, StringFormat=Rs. {0:N0}}" 
+                                   FontWeight="Bold" FontSize="14" Foreground="{StaticResource AccentBrush}" 
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- ════════ RIGHT: Expenses List ════════ -->
+        <Border Grid.Column="1" Style="{StaticResource CardBorder}">
+            <StackPanel>
+                <TextBlock Text="📋 Expense History" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                <DataGrid ItemsSource="{Binding Expenses}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Month" Binding="{Binding Month}" Width="80"/>
+                        <DataGridTextColumn Header="Electricity" Binding="{Binding Electricity, StringFormat=N0}" Width="90"/>
+                        <DataGridTextColumn Header="Maintenance" Binding="{Binding Maintenance, StringFormat=N0}" Width="90"/>
+                        <DataGridTextColumn Header="Other" Binding="{Binding Other, StringFormat=N0}" Width="80"/>
+                        <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=N0}" Width="80"/>
+                        <DataGridTemplateColumn Header="Actions" Width="90">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="✏" FontSize="14" Cursor="Hand"
+                                                Background="Transparent" Foreground="{StaticResource PrimaryBrush}" 
+                                                BorderThickness="0" Margin="0,0,6,0"
+                                                Command="{Binding DataContext.EditExpenseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"/>
+                                        <Button Content="🗑" FontSize="14" Cursor="Hand"
+                                                Background="Transparent" Foreground="{StaticResource DangerBrush}" 
+                                                BorderThickness="0"
+                                                Command="{Binding DataContext.DeleteExpenseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

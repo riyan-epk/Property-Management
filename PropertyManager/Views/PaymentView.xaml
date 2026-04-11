@@ -1,0 +1,140 @@
+<UserControl x:Class="PropertyManager.Views.PaymentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ════════ TOP ROW ════════ -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="360"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- LEFT: Payment Form -->
+            <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                <Border Style="{StaticResource CardBorder}">
+                    <StackPanel>
+                        <TextBlock Text="💳 Record Payment" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,14"/>
+
+                        <Label Content="Select Agreement"/>
+                        <ComboBox ItemsSource="{Binding Agreements}" SelectedItem="{Binding SelectedAgreement}" Margin="0,0,0,10">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <Run Text="{Binding Tenant.Name, Mode=OneWay}"/>
+                                        <Run Text=" — "/>
+                                        <Run Text="{Binding Unit.UnitNumber, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <Label Content="Month (YYYY-MM)"/>
+                        <TextBox Text="{Binding Month, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" KeyDown="FormField_KeyDown"/>
+
+                        <Label Content="Rent for this Month"/>
+                        <TextBlock Text="{Binding MonthlyRentForSelected, StringFormat=Rs. {0:N0}}" 
+                                   FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" 
+                                   Margin="0,0,0,10"/>
+
+                        <Label Content="Paid Amount (Rs.)"/>
+                        <TextBox Text="{Binding PaidAmount, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" KeyDown="FormField_KeyDown"/>
+
+                        <Label Content="Payment Date"/>
+                        <DatePicker SelectedDate="{Binding PaymentDate}" Margin="0,0,0,14"/>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Button Style="{StaticResource PrimaryButton}"
+                                    Command="{Binding SavePaymentCommand}" Margin="0,0,8,0">
+                                <TextBlock Text="💾 Save Payment"/>
+                            </Button>
+                            <Button Content="Cancel" Style="{StaticResource SecondaryButton}"
+                                    Command="{Binding CancelEditCommand}"
+                                    Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Outstanding Balance -->
+                <Border Style="{StaticResource CardBorder}" Background="#2D1A1A">
+                    <StackPanel>
+                        <TextBlock Text="⚠ Total Outstanding" FontSize="13" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource WarningBrush}" Margin="0,0,0,4"/>
+                        <TextBlock Text="{Binding TotalOutstanding, StringFormat=Rs. {0:N0}}" 
+                                   FontSize="28" FontWeight="Bold" Foreground="{StaticResource DangerBrush}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- RIGHT: Payment History -->
+            <Border Grid.Column="1" Style="{StaticResource CardBorder}">
+                <StackPanel>
+                    <TextBlock Text="📋 Payment Records" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <DataGrid ItemsSource="{Binding Payments}" MaxHeight="280">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Month" Binding="{Binding Month}" Width="80"/>
+                            <DataGridTextColumn Header="Paid Amount" Binding="{Binding PaidAmount, StringFormat=N0}" Width="100"/>
+                            <DataGridTextColumn Header="Date" Binding="{Binding PaymentDate, StringFormat=d}" Width="100"/>
+                            <DataGridTemplateColumn Header="Actions" Width="90">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="✏" FontSize="14" Cursor="Hand"
+                                                    Background="Transparent" Foreground="{StaticResource PrimaryBrush}" 
+                                                    BorderThickness="0" Margin="0,0,6,0"
+                                                    Command="{Binding DataContext.EditPaymentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"/>
+                                            <Button Content="🗑" FontSize="14" Cursor="Hand"
+                                                    Background="Transparent" Foreground="{StaticResource DangerBrush}" 
+                                                    BorderThickness="0"
+                                                    Command="{Binding DataContext.DeletePaymentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ════════ BOTTOM: Monthly Dues Summary ════════ -->
+        <Border Grid.Row="1" Style="{StaticResource CardBorder}" Margin="0,4,0,0">
+            <StackPanel>
+                <TextBlock Text="📊 Monthly Dues Breakdown" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                <DataGrid ItemsSource="{Binding MonthlySummaries}" MaxHeight="300">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Month" Binding="{Binding Month}" Width="80" MinWidth="70"/>
+                        <DataGridTextColumn Header="Tenant" Binding="{Binding TenantName}" Width="110" MinWidth="80"/>
+                        <DataGridTextColumn Header="Unit" Binding="{Binding UnitNumber}" Width="70" MinWidth="50"/>
+                        <DataGridTextColumn Header="Property" Binding="{Binding PropertyName}" Width="110" MinWidth="80"/>
+                        <DataGridTextColumn Header="Base Rent" Binding="{Binding BaseRent, StringFormat=N0}" Width="90" MinWidth="70"/>
+                        <DataGridTextColumn Header="Electricity" Binding="{Binding Electricity, StringFormat=N0}" Width="80" MinWidth="60"/>
+                        <DataGridTextColumn Header="Maint." Binding="{Binding Maintenance, StringFormat=N0}" Width="70" MinWidth="60"/>
+                        <DataGridTextColumn Header="Other" Binding="{Binding OtherExpenses, StringFormat=N0}" Width="70" MinWidth="50"/>
+                        <DataGridTextColumn Header="Total Rent" Binding="{Binding TotalRent, StringFormat=N0}" Width="90" MinWidth="70"/>
+                        <DataGridTextColumn Header="Paid" Binding="{Binding PaidAmount, StringFormat=N0}" Width="80" MinWidth="60"/>
+                        <DataGridTextColumn Header="Pending" Binding="{Binding PendingAmount, StringFormat=N0}" Width="80" MinWidth="60">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding PendingAmount, Converter={StaticResource PositiveValueConverter}}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

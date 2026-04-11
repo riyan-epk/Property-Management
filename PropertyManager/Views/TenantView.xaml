@@ -1,0 +1,60 @@
+<UserControl x:Class="PropertyManager.Views.TenantView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ════════ LEFT: Add/Edit Form ════════ -->
+        <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,12,0" VerticalAlignment="Top">
+            <StackPanel KeyboardNavigation.TabNavigation="Local">
+                <TextBlock Text="👤 Tenant Details" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,14"/>
+
+                <Label Content="Full Name"/>
+                <TextBox Text="{Binding TenantName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"
+                         KeyDown="FormField_KeyDown"/>
+
+                <Label Content="Phone Number"/>
+                <TextBox Text="{Binding TenantPhone, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"
+                         KeyDown="FormField_KeyDown"/>
+
+                <Label Content="CNIC"/>
+                <TextBox Text="{Binding TenantCNIC, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,14"
+                         KeyDown="FormField_KeyDown"/>
+
+                <!-- Buttons on separate rows to ensure all are visible -->
+                <WrapPanel Orientation="Horizontal" Margin="0,0,0,4">
+                    <Button Style="{StaticResource PrimaryButton}"
+                            Command="{Binding SaveTenantCommand}" Margin="0,0,8,6">
+                        <TextBlock Text="💾 Save Tenant"/>
+                    </Button>
+                    <Button Content="✏ Edit" Style="{StaticResource SecondaryButton}"
+                            Command="{Binding EditTenantCommand}" Margin="0,0,8,6"/>
+                    <Button Content="🗑 Delete" Style="{StaticResource DangerButton}"
+                            Command="{Binding DeleteTenantCommand}" Margin="0,0,0,6"/>
+                </WrapPanel>
+                <Button Content="Cancel Edit" Style="{StaticResource SecondaryButton}" 
+                        Command="{Binding CancelEditCommand}" Margin="0,4,0,0"
+                        HorizontalAlignment="Left"
+                        Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ════════ RIGHT: Tenants List ════════ -->
+        <Border Grid.Column="1" Style="{StaticResource CardBorder}">
+            <StackPanel>
+                <TextBlock Text="📋 Tenants List" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                <DataGrid ItemsSource="{Binding Tenants}" SelectedItem="{Binding SelectedTenant}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="140"/>
+                        <DataGridTextColumn Header="CNIC" Binding="{Binding CNIC}" Width="160"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

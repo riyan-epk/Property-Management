@@ -1,0 +1,189 @@
+<UserControl x:Class="PropertyManager.Views.ReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <!-- ════════ Overall Summary Cards ════════ -->
+        <UniformGrid Columns="3" Margin="0,0,0,16">
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="💰 Total Rent Expected" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <TextBlock Text="{Binding TotalRentExpected, StringFormat=Rs. {0:N0}}" 
+                               FontSize="28" FontWeight="Bold" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="✅ Total Collected" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <TextBlock Text="{Binding TotalCollected, StringFormat=Rs. {0:N0}}" 
+                               FontSize="28" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="⚠ Total Pending" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <TextBlock Text="{Binding TotalPending, StringFormat=Rs. {0:N0}}" 
+                               FontSize="28" FontWeight="Bold" Foreground="{StaticResource DangerBrush}" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- ════════ FILTER BAR ════════ -->
+        <Border Style="{StaticResource CardBorder}">
+            <StackPanel>
+                <TextBlock Text="🔍 Report Filters" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,12"/>
+
+                <WrapPanel Orientation="Horizontal">
+                    <!-- Tenant Filter -->
+                    <StackPanel Margin="0,0,20,8">
+                        <Label Content="Filter by Tenant"/>
+                        <ComboBox ItemsSource="{Binding AllTenants}" SelectedItem="{Binding SelectedTenant}" Width="200">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Period Filter -->
+                    <StackPanel Margin="0,0,20,8">
+                        <Label Content="Period"/>
+                        <ComboBox ItemsSource="{Binding FilterPeriods}" SelectedItem="{Binding FilterPeriod}" Width="160"/>
+                    </StackPanel>
+
+                    <!-- Custom Date Range (visible only when "Custom Range" selected) -->
+                    <StackPanel Margin="0,0,20,8"
+                                Visibility="{Binding IsCustomDateRange, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Label Content="From Date"/>
+                        <DatePicker SelectedDate="{Binding FilterFromDate}" Width="140"/>
+                    </StackPanel>
+                    <StackPanel Margin="0,0,20,8"
+                                Visibility="{Binding IsCustomDateRange, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Label Content="To Date"/>
+                        <DatePicker SelectedDate="{Binding FilterToDate}" Width="140"/>
+                    </StackPanel>
+                </WrapPanel>
+
+                <!-- Action Buttons -->
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Style="{StaticResource PrimaryButton}" Command="{Binding ApplyFiltersCommand}" Margin="0,0,10,0">
+                        <TextBlock Text="🔄 Apply Filters"/>
+                    </Button>
+                    <Button Style="{StaticResource SecondaryButton}" Command="{Binding ClearFiltersCommand}" Margin="0,0,10,0">
+                        <TextBlock Text="✕ Clear Filters"/>
+                    </Button>
+                    <Button Style="{StaticResource AccentButton}" Command="{Binding PrintReportCommand}">
+                        <TextBlock Text="🖨 Print Report"/>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- ════════ Filtered Totals ════════ -->
+        <UniformGrid Columns="3" Margin="0,0,0,4">
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0" Background="#1F2544">
+                <StackPanel>
+                    <TextBlock Text="📊 Filtered Rent Expected" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
+                    <TextBlock Text="{Binding FilteredRentExpected, StringFormat=Rs. {0:N0}}" 
+                               FontSize="22" FontWeight="Bold" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0" Background="#1F2544">
+                <StackPanel>
+                    <TextBlock Text="📊 Filtered Collected" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
+                    <TextBlock Text="{Binding FilteredCollected, StringFormat=Rs. {0:N0}}" 
+                               FontSize="22" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,0" Background="#1F2544">
+                <StackPanel>
+                    <TextBlock Text="📊 Filtered Pending" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
+                    <TextBlock Text="{Binding FilteredPending, StringFormat=Rs. {0:N0}}" 
+                               FontSize="22" FontWeight="Bold" Foreground="{StaticResource DangerBrush}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- ════════ Filtered Monthly Summary ════════ -->
+        <Border Style="{StaticResource CardBorder}">
+            <StackPanel>
+                <TextBlock Text="📊 Monthly Transaction Details" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <TextBlock Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,0,0,12">
+                    <Run Text="Showing "/>
+                    <Run Text="{Binding FilteredSummary.Count, Mode=OneWay}"/>
+                    <Run Text=" records"/>
+                </TextBlock>
+
+                <DataGrid ItemsSource="{Binding FilteredSummary}" MaxHeight="350">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Month" Binding="{Binding Month}" Width="80" MinWidth="70"/>
+                        <DataGridTextColumn Header="Tenant" Binding="{Binding TenantName}" Width="110" MinWidth="80"/>
+                        <DataGridTextColumn Header="Unit" Binding="{Binding UnitNumber}" Width="70" MinWidth="50"/>
+                        <DataGridTextColumn Header="Property" Binding="{Binding PropertyName}" Width="110" MinWidth="80"/>
+                        <DataGridTextColumn Header="Base Rent" Binding="{Binding BaseRent, StringFormat=N0}" Width="90" MinWidth="70"/>
+                        <DataGridTextColumn Header="Electricity" Binding="{Binding Electricity, StringFormat=N0}" Width="80" MinWidth="60"/>
+                        <DataGridTextColumn Header="Maint." Binding="{Binding Maintenance, StringFormat=N0}" Width="70" MinWidth="55"/>
+                        <DataGridTextColumn Header="Other" Binding="{Binding OtherExpenses, StringFormat=N0}" Width="70" MinWidth="50"/>
+                        <DataGridTextColumn Header="Total" Binding="{Binding TotalRent, StringFormat=N0}" Width="80" MinWidth="60"/>
+                        <DataGridTextColumn Header="Paid" Binding="{Binding PaidAmount, StringFormat=N0}" Width="80" MinWidth="60"/>
+                        <DataGridTextColumn Header="Pending" Binding="{Binding PendingAmount, StringFormat=N0}" Width="80" MinWidth="60">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding PendingAmount, Converter={StaticResource PositiveValueConverter}}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+
+        <!-- ════════ Defaulters List (Separate Report) ════════ -->
+        <Border Style="{StaticResource CardBorder}">
+            <StackPanel>
+                <Grid Margin="0,0,0,4">
+                    <TextBlock Text="🚨 Defaulters List" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource DangerButton}" HorizontalAlignment="Right"
+                            Command="{Binding PrintDefaultersReportCommand}">
+                        <TextBlock Text="🖨 Print Defaulters Report"/>
+                    </Button>
+                </Grid>
+                <TextBlock Text="Tenants with outstanding rent dues (separate from tenant reports)" 
+                           Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,0,0,12"/>
+
+                <DataGrid ItemsSource="{Binding Defaulters}" MaxHeight="300">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Tenant" Binding="{Binding TenantName}" Width="*" MinWidth="100"/>
+                        <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="130" MinWidth="90"/>
+                        <DataGridTextColumn Header="Property" Binding="{Binding PropertyName}" Width="130" MinWidth="90"/>
+                        <DataGridTextColumn Header="Unit" Binding="{Binding UnitNumber}" Width="70" MinWidth="50"/>
+                        <DataGridTextColumn Header="Unpaid Months" Binding="{Binding UnpaidMonths}" Width="100" MinWidth="70"/>
+                        <DataGridTextColumn Header="Total Due" Binding="{Binding TotalDue, StringFormat=N0}" Width="100" MinWidth="70">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+
+        <!-- Action Row -->
+        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+            <Button Content="🔄  Refresh All Data" Style="{StaticResource SecondaryButton}"
+                    Command="{Binding LoadDataCommand}" Margin="0,0,10,0"/>
+            <Button Style="{StaticResource AccentButton}" Command="{Binding PrintReportCommand}">
+                <TextBlock Text="🖨 Print Report"/>
+            </Button>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

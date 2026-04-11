@@ -1,0 +1,88 @@
+<UserControl x:Class="PropertyManager.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel>
+        <!-- Stats Cards Row 1 -->
+        <UniformGrid Columns="4" Margin="0,0,0,16">
+            <!-- Total Properties -->
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="🏢" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Total Properties" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <TextBlock Text="{Binding TotalProperties}" FontSize="32" FontWeight="Bold" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Total Units -->
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="🏠" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Total Units" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <TextBlock Text="{Binding TotalUnits}" FontSize="32" FontWeight="Bold" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Occupied -->
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="✅" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Occupied Units" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <TextBlock Text="{Binding OccupiedUnits}" FontSize="32" FontWeight="Bold" 
+                               Foreground="{StaticResource AccentBrush}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Vacant -->
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="🔑" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Vacant Units" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <TextBlock Text="{Binding VacantUnits}" FontSize="32" FontWeight="Bold" 
+                               Foreground="{StaticResource WarningBrush}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Stats Cards Row 2 -->
+        <UniformGrid Columns="3" Margin="0,0,0,16">
+            <!-- Tenants -->
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="👤" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Total Tenants" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <TextBlock Text="{Binding TotalTenants}" FontSize="32" FontWeight="Bold" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Rent Collected -->
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="💰" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Total Rent Collected" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <TextBlock Text="Rs. " FontSize="16" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Bottom" Margin="0,0,0,4"/>
+                        <TextBlock Text="{Binding TotalRentCollected, Converter={StaticResource CurrencyConverter}}" 
+                                   FontSize="32" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Pending Dues -->
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="⚠️" FontSize="24" Margin="0,0,0,8"/>
+                    <TextBlock Text="Total Pending Dues" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <TextBlock Text="Rs. " FontSize="16" Foreground="{StaticResource DangerBrush}" VerticalAlignment="Bottom" Margin="0,0,0,4"/>
+                        <TextBlock Text="{Binding TotalPendingDues, Converter={StaticResource CurrencyConverter}}" 
+                                   FontSize="32" FontWeight="Bold" Foreground="{StaticResource DangerBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Refresh Button -->
+        <Button Content="🔄  Refresh Dashboard" Style="{StaticResource SecondaryButton}"
+                Command="{Binding LoadDataCommand}" HorizontalAlignment="Left"/>
+    </StackPanel>
+</UserControl>
