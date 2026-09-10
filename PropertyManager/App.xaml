@@ -45,19 +45,31 @@
             </DataTemplate>
 
             <!-- ══════════════════════════════════════════════ -->
-            <!--           COLOR PALETTE                       -->
+            <!--           COLOR PALETTE  (Warm Light Theme)   -->
+            <!--   Creamy background · Maroon primary ·        -->
+            <!--   Marigold/Goldenrod accent                   -->
             <!-- ══════════════════════════════════════════════ -->
-            <Color x:Key="PrimaryColor">#6C63FF</Color>
-            <Color x:Key="PrimaryDarkColor">#5A52D5</Color>
-            <Color x:Key="AccentColor">#00D9A6</Color>
-            <Color x:Key="DangerColor">#FF6B6B</Color>
-            <Color x:Key="WarningColor">#FFD93D</Color>
-            <Color x:Key="BgDarkColor">#1A1B2E</Color>
-            <Color x:Key="BgCardColor">#242640</Color>
-            <Color x:Key="BgInputColor">#2D2F4E</Color>
-            <Color x:Key="TextPrimaryColor">#EAEAF0</Color>
-            <Color x:Key="TextSecondaryColor">#9B9BB4</Color>
-            <Color x:Key="BorderColor">#3A3C5A</Color>
+            <Color x:Key="PrimaryColor">#8A2E3B</Color>        <!-- Maroon -->
+            <Color x:Key="PrimaryDarkColor">#6E2430</Color>    <!-- Deep maroon -->
+            <Color x:Key="AccentColor">#B9791F</Color>         <!-- Marigold / goldenrod -->
+            <Color x:Key="DangerColor">#C0392B</Color>         <!-- Brick red -->
+            <Color x:Key="WarningColor">#C8892B</Color>        <!-- Amber -->
+            <Color x:Key="BgDarkColor">#F5EFE3</Color>         <!-- Creamy page background -->
+            <Color x:Key="BgCardColor">#FFFDF8</Color>         <!-- Warm white card -->
+            <Color x:Key="BgInputColor">#FBF6EC</Color>        <!-- Tinted input -->
+            <Color x:Key="TextPrimaryColor">#2C2620</Color>    <!-- Near-black brown -->
+            <Color x:Key="TextSecondaryColor">#8A7D6B</Color>  <!-- Muted taupe -->
+            <Color x:Key="BorderColor">#E4D9C4</Color>         <!-- Warm border -->
+
+            <!-- Sidebar (deep maroon panel with cream text) -->
+            <Color x:Key="SidebarBgColor">#6E2430</Color>
+            <Color x:Key="SidebarTextColor">#F3E7D8</Color>
+            <Color x:Key="SidebarMutedColor">#D9B7AE</Color>
+            <Color x:Key="SidebarHoverColor">#83303D</Color>
+
+            <!-- Row selection / hover tints -->
+            <Color x:Key="RowSelectedColor">#F3E1E4</Color>
+            <Color x:Key="RowHoverColor">#FBF3E7</Color>
 
             <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
             <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDarkColor}"/>
@@ -70,6 +82,10 @@
             <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
             <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
             <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+            <SolidColorBrush x:Key="SidebarBgBrush" Color="{StaticResource SidebarBgColor}"/>
+            <SolidColorBrush x:Key="SidebarTextBrush" Color="{StaticResource SidebarTextColor}"/>
+            <SolidColorBrush x:Key="SidebarMutedBrush" Color="{StaticResource SidebarMutedColor}"/>
+            <SolidColorBrush x:Key="SidebarHoverBrush" Color="{StaticResource SidebarHoverColor}"/>
 
             <!-- ══════════════════════════════════════════════ -->
             <!--           GLOBAL STYLES                       -->
@@ -287,7 +303,7 @@
             <!-- Accent Button -->
             <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
                 <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
-                <Setter Property="Foreground" Value="#1A1B2E"/>
+                <Setter Property="Foreground" Value="White"/>
             </Style>
 
             <!-- Secondary/Ghost Button -->
@@ -315,7 +331,7 @@
             <!-- Sidebar Button -->
             <Style x:Key="SidebarButton" TargetType="Button">
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource SidebarMutedBrush}"/>
                 <Setter Property="FontSize" Value="13"/>
                 <Setter Property="FontFamily" Value="Segoe UI"/>
                 <Setter Property="Padding" Value="16,12"/>
@@ -332,8 +348,8 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="{StaticResource BgInputBrush}"/>
-                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource SidebarHoverBrush}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource SidebarTextBrush}"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -344,9 +360,16 @@
             <!-- Card Border -->
             <Style x:Key="CardBorder" TargetType="Border">
                 <Setter Property="Background" Value="{StaticResource BgCardBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="CornerRadius" Value="10"/>
                 <Setter Property="Padding" Value="20"/>
                 <Setter Property="Margin" Value="0,0,0,12"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="#B59B6A" BlurRadius="12" ShadowDepth="0" Opacity="0.18"/>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <!-- DataGrid with horizontal scrolling -->
@@ -372,6 +395,12 @@
                 <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
                 <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
                 <Setter Property="ColumnWidth" Value="SizeToCells"/>
+                <!-- Virtualization for smooth rendering of large grids -->
+                <Setter Property="EnableRowVirtualization" Value="True"/>
+                <Setter Property="EnableColumnVirtualization" Value="True"/>
+                <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+                <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+                <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
             </Style>
 
             <Style TargetType="DataGridColumnHeader">
@@ -398,8 +427,8 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="Background" Value="#3A3C6A"/>
-                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Background" Value="#F3E1E4"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -407,10 +436,10 @@
             <Style TargetType="DataGridRow">
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="Background" Value="#3A3C6A"/>
+                        <Setter Property="Background" Value="#F3E1E4"/>
                     </Trigger>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#2F3152"/>
+                        <Setter Property="Background" Value="#FBF3E7"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>

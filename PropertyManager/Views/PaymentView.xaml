@@ -60,10 +60,10 @@
                 </Border>
 
                 <!-- Outstanding Balance -->
-                <Border Style="{StaticResource CardBorder}" Background="#2D1A1A">
+                <Border Style="{StaticResource CardBorder}" Background="#FBEBE8">
                     <StackPanel>
-                        <TextBlock Text="⚠ Total Outstanding" FontSize="13" FontWeight="SemiBold" 
-                                   Foreground="{StaticResource WarningBrush}" Margin="0,0,0,4"/>
+                        <TextBlock Text="⚠ Total Outstanding" FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{StaticResource DangerBrush}" Margin="0,0,0,4"/>
                         <TextBlock Text="{Binding TotalOutstanding, StringFormat=Rs. {0:N0}}" 
                                    FontSize="28" FontWeight="Bold" Foreground="{StaticResource DangerBrush}"/>
                     </StackPanel>
@@ -79,17 +79,23 @@
                             <DataGridTextColumn Header="Month" Binding="{Binding Month}" Width="80"/>
                             <DataGridTextColumn Header="Paid Amount" Binding="{Binding PaidAmount, StringFormat=N0}" Width="100"/>
                             <DataGridTextColumn Header="Date" Binding="{Binding PaymentDate, StringFormat=d}" Width="100"/>
-                            <DataGridTemplateColumn Header="Actions" Width="90">
+                            <DataGridTemplateColumn Header="Actions" Width="120">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
+                                            <Button Content="🖨" FontSize="14" Cursor="Hand"
+                                                    Background="Transparent" Foreground="{StaticResource AccentBrush}"
+                                                    BorderThickness="0" Margin="0,0,6,0"
+                                                    ToolTip="Print rent receipt"
+                                                    Command="{Binding DataContext.PrintReceiptCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"/>
                                             <Button Content="✏" FontSize="14" Cursor="Hand"
-                                                    Background="Transparent" Foreground="{StaticResource PrimaryBrush}" 
+                                                    Background="Transparent" Foreground="{StaticResource PrimaryBrush}"
                                                     BorderThickness="0" Margin="0,0,6,0"
                                                     Command="{Binding DataContext.EditPaymentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"/>
                                             <Button Content="🗑" FontSize="14" Cursor="Hand"
-                                                    Background="Transparent" Foreground="{StaticResource DangerBrush}" 
+                                                    Background="Transparent" Foreground="{StaticResource DangerBrush}"
                                                     BorderThickness="0"
                                                     Command="{Binding DataContext.DeletePaymentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                     CommandParameter="{Binding}"/>

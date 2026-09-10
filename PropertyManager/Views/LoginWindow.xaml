@@ -14,10 +14,10 @@
         <vm:LoginViewModel/>
     </Window.DataContext>
 
-    <Border Background="#1A1B2E" CornerRadius="16" Margin="10"
-            BorderBrush="#3A3C5A" BorderThickness="1">
+    <Border Background="#FFFDF8" CornerRadius="16" Margin="10"
+            BorderBrush="#E4D9C4" BorderThickness="1">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.5" Color="#000000"/>
+            <DropShadowEffect BlurRadius="24" ShadowDepth="0" Opacity="0.35" Color="#8A2E3B"/>
         </Border.Effect>
 
         <Grid>
@@ -27,16 +27,16 @@
             </Grid.RowDefinitions>
 
             <!-- Title Bar (draggable) -->
-            <Border Grid.Row="0" Background="#242640" CornerRadius="16,16,0,0" 
+            <Border Grid.Row="0" Background="#6E2430" CornerRadius="16,16,0,0"
                     Padding="16,12" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="🏠" FontSize="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <TextBlock Text="Property Manager" FontSize="15" FontWeight="SemiBold"
-                                   Foreground="#EAEAF0" VerticalAlignment="Center"/>
+                                   Foreground="#F3E7D8" VerticalAlignment="Center"/>
                     </StackPanel>
                     <Button Content="✕" HorizontalAlignment="Right" Background="Transparent"
-                            Foreground="#9B9BB4" FontSize="16" BorderThickness="0"
+                            Foreground="#D9B7AE" FontSize="16" BorderThickness="0"
                             Cursor="Hand" Click="CloseButton_Click" Padding="4,0"/>
                 </Grid>
             </Border>
@@ -45,28 +45,28 @@
             <StackPanel Grid.Row="1" Margin="40,32,40,40" VerticalAlignment="Center">
                 <TextBlock Text="🔐" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,8"/>
                 <TextBlock Text="Welcome Back" FontSize="22" FontWeight="Bold"
-                           Foreground="#EAEAF0" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                           Foreground="#8A2E3B" HorizontalAlignment="Center" Margin="0,0,0,4"/>
                 <TextBlock Text="Sign in to continue" FontSize="12"
-                           Foreground="#9B9BB4" HorizontalAlignment="Center" Margin="0,0,0,24"/>
+                           Foreground="#8A7D6B" HorizontalAlignment="Center" Margin="0,0,0,24"/>
 
                 <!-- Error Message -->
-                <Border Background="#3D1F1F" CornerRadius="6" Padding="12,8" Margin="0,0,0,16"
+                <Border Background="#FBEBE8" BorderBrush="#E7B9B2" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,0,16"
                         Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="{Binding ErrorMessage}" Foreground="#FF6B6B" FontSize="12"
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="#C0392B" FontSize="12"
                                TextWrapping="Wrap"/>
                 </Border>
 
                 <!-- Username -->
-                <TextBlock Text="Username" Foreground="#9B9BB4" FontSize="12" Margin="0,0,0,6"/>
-                <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" 
+                <TextBlock Text="Username" Foreground="#8A7D6B" FontSize="12" Margin="0,0,0,6"/>
+                <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
                          Margin="0,0,0,16" FontSize="14"/>
 
                 <!-- Password -->
-                <TextBlock Text="Password" Foreground="#9B9BB4" FontSize="12" Margin="0,0,0,6"/>
+                <TextBlock Text="Password" Foreground="#8A7D6B" FontSize="12" Margin="0,0,0,6"/>
                 <PasswordBox x:Name="PasswordBox" Margin="0,0,0,24" FontSize="14"
-                             Background="#2D2F4E" Foreground="#EAEAF0" 
-                             BorderBrush="#3A3C5A" BorderThickness="1"
-                             Padding="10,8" CaretBrush="#EAEAF0"
+                             Background="#FBF6EC" Foreground="#2C2620"
+                             BorderBrush="#E4D9C4" BorderThickness="1"
+                             Padding="10,8" CaretBrush="#2C2620"
                              KeyDown="PasswordBox_KeyDown">
                     <PasswordBox.Template>
                         <ControlTemplate TargetType="PasswordBox">
@@ -78,7 +78,7 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsFocused" Value="True">
-                                    <Setter Property="BorderBrush" Value="#6C63FF"/>
+                                    <Setter Property="BorderBrush" Value="#8A2E3B"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>

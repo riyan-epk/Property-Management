@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using PropertyManager.Data;
 using PropertyManager.Models;
+using PropertyManager.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -111,6 +112,8 @@ namespace PropertyManager.ViewModels
                 var agreement = db.Agreements.Find(_editingId);
                 if (agreement != null)
                 {
+                    int oldUnitId = agreement.UnitId;
+
                     agreement.TenantId = SelectedTenant.Id;
                     agreement.UnitId = SelectedUnit.Id;
                     agreement.StartDate = StartDate;
@@ -120,6 +123,21 @@ namespace PropertyManager.ViewModels
                     agreement.IncreaseAfterMonths = IncreaseAfterMonths;
                     agreement.IncreasePercentage = IncreasePercentage;
                     db.SaveChanges();
+
+                    // Keep unit occupancy in sync when the unit is reassigned.
+                    if (oldUnitId != SelectedUnit.Id)
+                    {
+                        var newUnit = db.Units.Find(SelectedUnit.Id);
+                        if (newUnit != null) newUnit.Status = "Occupied";
+
+                        var oldUnit = db.Units.Find(oldUnitId);
+                        if (oldUnit != null &&
+                            !db.Agreements.Any(a => a.UnitId == oldUnitId && a.Id != _editingId))
+                        {
+                            oldUnit.Status = "Vacant";
+                        }
+                        db.SaveChanges();
+                    }
                 }
                 IsEditing = false;
             }
@@ -178,10 +196,17 @@ namespace PropertyManager.ViewModels
                 var agreement = db.Agreements.Find(SelectedAgreement.Id);
                 if (agreement != null)
                 {
-                    var unit = db.Units.Find(agreement.UnitId);
-                    if (unit != null) { unit.Status = "Vacant"; }
+                    int unitId = agreement.UnitId;
                     db.Agreements.Remove(agreement);
                     db.SaveChanges();
+
+                    // Only free the unit if no other agreement still uses it.
+                    var unit = db.Units.Find(unitId);
+                    if (unit != null && !db.Agreements.Any(a => a.UnitId == unitId))
+                    {
+                        unit.Status = "Vacant";
+                        db.SaveChanges();
+                    }
                 }
                 LoadDataCommand.Execute(null);
             }
@@ -198,6 +223,18 @@ namespace PropertyManager.ViewModels
         {
             IsEditing = false;
             ClearForm();
+        }
+
+        [RelayCommand]
+        private void PrintAgreement()
+        {
+            if (SelectedAgreement == null)
+            {
+                MessageBox.Show("Select an agreement from the list to print.", "Print Agreement",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            DocumentService.PrintAgreementDeed(SelectedAgreement);
         }
 
         private void ClearForm()

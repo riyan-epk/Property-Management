@@ -181,6 +181,18 @@ namespace PropertyManager.ViewModels
         }
 
         [RelayCommand]
+        private void PrintReceipt(Payment payment)
+        {
+            if (payment == null || SelectedAgreement == null)
+            {
+                MessageBox.Show("Select an agreement and a payment to print a receipt.", "Rent Receipt",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            DocumentService.PrintRentReceipt(SelectedAgreement, payment);
+        }
+
+        [RelayCommand]
         private void CancelEdit()
         {
             IsEditing = false;

@@ -45,7 +45,8 @@
 
                     <!-- Column 3: Rent Increase Settings (KEY FEATURE) -->
                     <StackPanel Grid.Column="2">
-                        <Border Background="#2A2C4A" CornerRadius="8" Padding="14" Margin="0,0,0,10">
+                        <Border Background="#FBF1E2" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="8" Padding="14" Margin="0,0,0,10">
                             <StackPanel>
                                 <TextBlock Text="📈 Rent Increase Rules" FontSize="13" FontWeight="SemiBold" 
                                            Foreground="{StaticResource AccentBrush}" Margin="0,0,0,10"/>
@@ -90,7 +91,14 @@
         <!-- ════════ BOTTOM: Agreements List ════════ -->
         <Border Grid.Row="1" Style="{StaticResource CardBorder}" Margin="0,4,0,0">
             <StackPanel>
-                <TextBlock Text="📋 Agreements" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                <Grid Margin="0,0,0,12">
+                    <TextBlock Text="📋 Agreements" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <Button Style="{StaticResource AccentButton}" HorizontalAlignment="Right"
+                            Command="{Binding PrintAgreementCommand}"
+                            ToolTip="Print the selected agreement (Mohada / معاہدہ)">
+                        <TextBlock Text="🖨 Print Agreement (معاہدہ)"/>
+                    </Button>
+                </Grid>
                 <DataGrid ItemsSource="{Binding Agreements}" SelectedItem="{Binding SelectedAgreement}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="40"/>

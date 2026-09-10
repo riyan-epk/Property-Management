@@ -81,21 +81,21 @@
 
         <!-- ════════ Filtered Totals ════════ -->
         <UniformGrid Columns="3" Margin="0,0,0,4">
-            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0" Background="#1F2544">
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0" Background="#F7EEDD">
                 <StackPanel>
                     <TextBlock Text="📊 Filtered Rent Expected" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
                     <TextBlock Text="{Binding FilteredRentExpected, StringFormat=Rs. {0:N0}}" 
                                FontSize="22" FontWeight="Bold" Margin="0,4,0,0"/>
                 </StackPanel>
             </Border>
-            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0" Background="#1F2544">
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,12,0" Background="#F7EEDD">
                 <StackPanel>
                     <TextBlock Text="📊 Filtered Collected" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
                     <TextBlock Text="{Binding FilteredCollected, StringFormat=Rs. {0:N0}}" 
                                FontSize="22" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" Margin="0,4,0,0"/>
                 </StackPanel>
             </Border>
-            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,0" Background="#1F2544">
+            <Border Style="{StaticResource CardBorder}" Margin="0,0,0,0" Background="#F7EEDD">
                 <StackPanel>
                     <TextBlock Text="📊 Filtered Pending" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
                     <TextBlock Text="{Binding FilteredPending, StringFormat=Rs. {0:N0}}" 

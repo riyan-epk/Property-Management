@@ -9,20 +9,19 @@
     <Grid>
         <!-- Center the card on the screen -->
         <Border HorizontalAlignment="Center" VerticalAlignment="Center"
-                Background="#2D2F4E" CornerRadius="12" Padding="40"
-                BorderBrush="#3A3C5A" BorderThickness="1"
+                Background="{StaticResource BgCardBrush}" CornerRadius="12" Padding="40"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
                 Width="400"
                 Margin="0,0,0,50">
-            <!-- Drop shadow effect styling is handled by Border itself visually or we can add an explicit one if needed, but sticking to existing flat-dark theme, this works well -->
             <Border.Effect>
-                <DropShadowEffect Color="Black" BlurRadius="20" Opacity="0.5" Direction="270" ShadowDepth="10" />
+                <DropShadowEffect Color="#B59B6A" BlurRadius="20" Opacity="0.3" Direction="270" ShadowDepth="6" />
             </Border.Effect>
-            
+
             <StackPanel HorizontalAlignment="Center">
                 <!-- Avatar Icon -->
-                <Ellipse Width="100" Height="100" Fill="#1E1F36" Stroke="#6C63FF" StrokeThickness="3" Margin="0,0,0,20">
+                <Ellipse Width="100" Height="100" Fill="{StaticResource BgDarkBrush}" Stroke="{StaticResource PrimaryBrush}" StrokeThickness="3" Margin="0,0,0,20">
                     <Ellipse.Effect>
-                        <DropShadowEffect Color="#6C63FF" BlurRadius="10" Opacity="0.3" ShadowDepth="0" />
+                        <DropShadowEffect Color="#8A2E3B" BlurRadius="10" Opacity="0.25" ShadowDepth="0" />
                     </Ellipse.Effect>
                 </Ellipse>
                 <TextBlock Text="👤" FontSize="50" HorizontalAlignment="Center" Margin="0,-95,0,0" Foreground="{StaticResource AccentBrush}" IsHitTestVisible="False"/>
@@ -43,10 +42,10 @@
                            HorizontalAlignment="Center" Margin="0,0,0,24" />
                 
                 <!-- Separator -->
-                <Rectangle Height="1" Fill="#3A3C5A" Margin="0,0,0,24" />
-                
+                <Rectangle Height="1" Fill="{StaticResource BorderBrush}" Margin="0,0,0,24" />
+
                 <!-- Contact Details Card inside -->
-                <Border Background="#1E1F36" CornerRadius="8" Padding="16">
+                <Border Background="{StaticResource BgInputBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="📞" FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}"/>
                         <StackPanel VerticalAlignment="Center">

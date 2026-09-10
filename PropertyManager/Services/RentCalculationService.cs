@@ -37,13 +37,14 @@ namespace PropertyManager.Services
             // How many increase periods have completed?
             int increaseCount = monthsElapsed / agreement.IncreaseAfterMonths;
 
-            // Apply compound increases
+            // Apply compound increases (rounded per revision, matching GetMonthlySummaries)
+            decimal factor = 1 + (decimal)(agreement.IncreasePercentage / 100.0);
             for (int i = 0; i < increaseCount; i++)
             {
-                currentRent += currentRent * (decimal)(agreement.IncreasePercentage / 100.0);
+                currentRent = Math.Round(currentRent * factor, 2);
             }
 
-            return Math.Round(currentRent, 2);
+            return currentRent;
         }
 
         /// <summary>
@@ -85,23 +86,48 @@ namespace PropertyManager.Services
             var end = DateTime.Now < agreement.EndDate ? DateTime.Now : agreement.EndDate;
             var endMonth = new DateTime(end.Year, end.Month, 1);
 
-            for (var current = start; current <= endMonth; current = current.AddMonths(1))
+            // Pre-index expenses and payments by month so each lookup is O(1)
+            // instead of scanning the whole collection for every month.
+            var expensesByMonth = (agreement.Expenses ?? new List<Expense>())
+                .GroupBy(e => e.Month)
+                .ToDictionary(g => g.Key, g => g.First());
+            var paidByMonth = (agreement.Payments ?? new List<Payment>())
+                .GroupBy(p => p.Month)
+                .ToDictionary(g => g.Key, g => g.Sum(p => p.PaidAmount));
+
+            string tenantName = agreement.Tenant?.Name ?? "N/A";
+            string unitNumber = agreement.Unit?.UnitNumber ?? "N/A";
+            string propertyName = agreement.Unit?.Property?.Name ?? "N/A";
+
+            bool applyIncreases = agreement.IncreaseAfterMonths > 0 && agreement.IncreasePercentage > 0;
+            decimal increaseFactor = 1 + (decimal)(agreement.IncreasePercentage / 100.0);
+
+            // Progressive effective rent: apply the compound increase only when a
+            // new period boundary is crossed — O(total months) overall.
+            decimal effectiveRent = agreement.BaseRent;
+            int monthsElapsed = 0;
+            int nextIncreaseAt = applyIncreases ? agreement.IncreaseAfterMonths : int.MaxValue;
+
+            for (var current = start; current <= endMonth; current = current.AddMonths(1), monthsElapsed++)
             {
+                while (applyIncreases && monthsElapsed >= nextIncreaseAt)
+                {
+                    effectiveRent = Math.Round(effectiveRent * increaseFactor, 2);
+                    nextIncreaseAt += agreement.IncreaseAfterMonths;
+                }
+
                 string month = current.ToString("yyyy-MM");
-                var effectiveRent = CalculateEffectiveRent(agreement, month);
-                var expense = agreement.Expenses?.FirstOrDefault(e => e.Month == month);
+                expensesByMonth.TryGetValue(month, out var expense);
                 var totalExpenses = expense != null ? expense.Electricity + expense.Maintenance + expense.Other : 0;
                 var totalRent = effectiveRent + totalExpenses;
-                var paid = agreement.Payments?
-                    .Where(p => p.Month == month)
-                    .Sum(p => p.PaidAmount) ?? 0;
+                paidByMonth.TryGetValue(month, out var paid);
 
                 summaries.Add(new MonthlyRentSummary
                 {
                     Month = month,
-                    TenantName = agreement.Tenant?.Name ?? "N/A",
-                    UnitNumber = agreement.Unit?.UnitNumber ?? "N/A",
-                    PropertyName = agreement.Unit?.Property?.Name ?? "N/A",
+                    TenantName = tenantName,
+                    UnitNumber = unitNumber,
+                    PropertyName = propertyName,
                     BaseRent = effectiveRent,
                     Electricity = expense?.Electricity ?? 0,
                     Maintenance = expense?.Maintenance ?? 0,
